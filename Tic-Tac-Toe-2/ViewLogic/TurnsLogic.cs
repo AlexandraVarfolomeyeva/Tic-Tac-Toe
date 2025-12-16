@@ -27,7 +27,7 @@ namespace Tic_Tac_Toe_2.ViewLogic
             return (x, y);
         }
 
-        private bool checkIfFieldIsEmpty(int x,int y)
+        private bool checkIfBoxIsEmpty(int x,int y)
         {
             return board[x, y] == 0;
         }
@@ -39,7 +39,7 @@ namespace Tic_Tac_Toe_2.ViewLogic
 
         public int makeMove(int x, int y)
         {
-            if (!checkWin() && checkIfFieldIsEmpty(x, y))
+            if (!checkWin() && checkIfBoxIsEmpty(x, y))
             {
                 board[x, y] = checkWhoseTurn();
                 return board[x, y];
@@ -59,7 +59,6 @@ namespace Tic_Tac_Toe_2.ViewLogic
         }
 
         public bool checkWin() {
-            //если сл ход крест то выиграли нолик
             if (Math.Abs(board[0, 0] + board[1, 1] + board[2, 2]) == 3
                 || Math.Abs(board[0, 2] + board[1, 1] + board[2, 0]) == 3
                 || Math.Abs(board[0, 0] + board[0, 1] + board[0, 2]) == 3

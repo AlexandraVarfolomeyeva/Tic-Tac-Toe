@@ -22,7 +22,6 @@ namespace Tic_Tac_Toe_2.ViewLogic
         private readonly double figureSize;
         private TurnsLogic turn;
 
-        private static readonly SolidColorBrush fieldBackBrush = Brushes.Blue;
         private const int lineThickness = 2;
         private readonly double figureOffset;
 
@@ -52,19 +51,21 @@ namespace Tic_Tac_Toe_2.ViewLogic
 
         private void InitializeField()
         {
+            Brush fieldBackBrush = Brushes.Blue;
 
-            gameField.Children.Add(createLine(0, 0, 0, gameBoardHeight));
-            gameField.Children.Add(createLine(gameBoardWidth / 3, 0, gameBoardWidth / 3, gameBoardHeight));
-            gameField.Children.Add(createLine(gameBoardWidth / 3 * 2, 0, gameBoardWidth / 3 * 2, gameBoardHeight));
-            gameField.Children.Add(createLine(gameBoardWidth, 0, gameBoardWidth, gameBoardHeight));
 
-            gameField.Children.Add(createLine(0, 0, gameBoardWidth, 0));
-            gameField.Children.Add(createLine(0, gameBoardHeight / 3, gameBoardWidth, gameBoardHeight/3));
-            gameField.Children.Add(createLine(0, gameBoardHeight / 3 * 2, gameBoardWidth, gameBoardHeight / 3 * 2));
-            gameField.Children.Add(createLine(0, gameBoardHeight, gameBoardWidth, gameBoardHeight));
+            gameField.Children.Add(createLine(0, 0, 0, gameBoardHeight, fieldBackBrush));
+            gameField.Children.Add(createLine(gameBoardWidth / 3, 0, gameBoardWidth / 3, gameBoardHeight, fieldBackBrush));
+            gameField.Children.Add(createLine(gameBoardWidth / 3 * 2, 0, gameBoardWidth / 3 * 2, gameBoardHeight, fieldBackBrush));
+            gameField.Children.Add(createLine(gameBoardWidth, 0, gameBoardWidth, gameBoardHeight, fieldBackBrush));
+
+            gameField.Children.Add(createLine(0, 0, gameBoardWidth, 0, fieldBackBrush));
+            gameField.Children.Add(createLine(0, gameBoardHeight / 3, gameBoardWidth, gameBoardHeight/3, fieldBackBrush));
+            gameField.Children.Add(createLine(0, gameBoardHeight / 3 * 2, gameBoardWidth, gameBoardHeight / 3 * 2, fieldBackBrush));
+            gameField.Children.Add(createLine(0, gameBoardHeight, gameBoardWidth, gameBoardHeight, fieldBackBrush));
         }
 
-        private Line createLine(double fromX, double fromY, double toX, double toY)
+        private Line createLine(double fromX, double fromY, double toX, double toY, Brush brush)
         {
             Line myLine = new Line();
 
@@ -73,8 +74,7 @@ namespace Tic_Tac_Toe_2.ViewLogic
 
             myLine.X2 = toX;
             myLine.Y2 = toY;
-            
-            myLine.Stroke = fieldBackBrush;
+            myLine.Stroke = brush;
             myLine.StrokeThickness = lineThickness;
 
             return myLine;
@@ -107,7 +107,7 @@ namespace Tic_Tac_Toe_2.ViewLogic
 
             if (crossZero !=0 && turn.checkWin())
             {
-                log.Text = "Победили " + (crossZero == TurnsLogic.zero ? "нолики." : "крестики");
+                log.Text = "Победили " + (crossZero == TurnsLogic.zero ? "нолики." : "крестики.");
                 return;
             }
         }
@@ -118,7 +118,7 @@ namespace Tic_Tac_Toe_2.ViewLogic
             myEllipse.Width = figureSize;
             myEllipse.Height = figureSize;
             myEllipse.Stroke = Brushes.Black;
-            myEllipse.StrokeThickness = 2;
+            myEllipse.StrokeThickness = lineThickness;
             Canvas.SetLeft(myEllipse, leftTop.X + figureOffset);
             Canvas.SetTop(myEllipse, leftTop.Y + figureOffset);
             gameField.Children.Add(myEllipse); 
@@ -126,32 +126,16 @@ namespace Tic_Tac_Toe_2.ViewLogic
 
         private void drawCross(Point leftTop)
         {
-            Polyline myPolyline = new Polyline();
-            myPolyline.FillRule = FillRule.Nonzero;
+            double offsetX = figureOffset + leftTop.X;
+            double offsetY = figureOffset + leftTop.Y;
 
-            Point PointTopLeft = new Point(0, 0);
-            Point PointCenter = new Point(figureSize / 2, figureSize / 2);
-            Point PointTopRight = new Point(0, figureSize);
-            Point PointBottomLeft = new Point(figureSize, 0);
-            Point PointBottomRight= new Point(figureSize, figureSize);
+            Point PointTopLeft = new Point(0 + offsetX, 0 + offsetY);
+            Point PointBottomLeft = new Point(0 + offsetX, figureSize + offsetY);
+            Point PointTopRight = new Point(figureSize + offsetX, offsetY);
+            Point PointBottomRight= new Point(figureSize + offsetX, figureSize + offsetY);
 
-            PointCollection myPointCollection1 = new PointCollection();
-            
-            myPointCollection1.Add(PointTopRight);
-            myPointCollection1.Add(PointBottomLeft);
-            myPointCollection1.Add(PointTopLeft);
-            myPointCollection1.Add(PointBottomRight);
-
-            myPolyline.Points = myPointCollection1;
-
-
-            myPolyline.Width = figureSize;
-            myPolyline.Height = figureSize;
-            myPolyline.Stroke = Brushes.Black;
-            myPolyline.StrokeThickness = 2;
-            Canvas.SetLeft(myPolyline, leftTop.X + figureOffset);
-            Canvas.SetTop(myPolyline, leftTop.Y + figureOffset);
-            gameField.Children.Add(myPolyline);
+            gameField.Children.Add(createLine(PointTopRight.X, PointTopRight.Y, PointBottomLeft.X, PointBottomLeft.Y, Brushes.Black));
+            gameField.Children.Add(createLine(PointTopLeft.X, PointTopLeft.Y, PointBottomRight.X, PointBottomRight.Y, Brushes.Black));
         }
     }
 }
